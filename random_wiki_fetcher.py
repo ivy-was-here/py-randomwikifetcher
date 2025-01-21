@@ -2,7 +2,7 @@ import requests
 import os
 import re
 
-# Paths for directories and files
+# this part tells it where to send the pages when you're done with them
 output_dir = "generated_pages"
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
@@ -12,11 +12,11 @@ logo_path = "imgs/logo.png"
 
 CATEGORY_API_URL = "https://en.wikipedia.org/w/api.php"
 
-# Function to sanitize filenames
+# filename changer so it is useful
 def sanitize_filename(title):
     return re.sub(r'[\\/*?:"<>|]', "", title.replace(" ", "_"))
 
-# Function to fetch articles by category
+# get by cateogry hopefully
 def fetch_articles_by_category(category):
     params = {
         "action": "query",
@@ -41,7 +41,6 @@ def fetch_articles_by_category(category):
         print(f"Error fetching category members: {e}")
         return None
 
-# Function to fetch article summaries by title
 def fetch_article_summary_by_title(title):
     summary_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{title}"
     response = requests.get(summary_url)
@@ -55,7 +54,7 @@ def fetch_article_summary_by_title(title):
         print(f"Error fetching article summary for {title}.")
         return None
 
-# Function to create an HTML page
+# create the page from the extract
 def create_html_page(title, content):
     sanitized_title = sanitize_filename(title)
     html_template = f"""<!DOCTYPE html>
@@ -103,7 +102,7 @@ def create_html_page(title, content):
         file.write(html_template)
     print(f"Generated HTML page for '{title}' at {file_path}")
 
-# Main function
+# main function
 def main():
     category = input("Enter the Wikipedia category (e.g., Geography_of_Donovia): ")
     article = fetch_articles_by_category(category)
